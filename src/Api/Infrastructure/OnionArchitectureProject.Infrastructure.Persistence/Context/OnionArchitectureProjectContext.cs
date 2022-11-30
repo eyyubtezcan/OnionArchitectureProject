@@ -12,21 +12,40 @@ namespace OnionArchitectureProject.Infrastructure.Persistence.Context
     public class OnionArchitectureProjectContext : DbContext
     {
         public const string DEFAULT_SCHEMA = "dbo";
+        public OnionArchitectureProjectContext()
+        {
 
+        }
         public OnionArchitectureProjectContext(DbContextOptions options) : base(options)
         {
 
         }
 
-        public DbSet<User> Users {get;set;}
+
+
+        public DbSet<User> Users { get; set; }
         public DbSet<Entry> Entries { get; set; }
-        public DbSet<EntryVote> EntryVotes{ get; set; }
-        public DbSet<EntryFavorite> EntryFavorites{ get; set; }
-        public DbSet<EntryComment> EntryComments{ get; set; }
-        public DbSet<EntryCommentVote> EntryCommentVotes{ get; set; }
-        public DbSet<EntryCommentFavorite> EntryCommentFavorites{ get; set; }
-        public DbSet<EmailConfirmation> EmailConfirmations{ get; set; }
-       protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public DbSet<EntryVote> EntryVotes { get; set; }
+        public DbSet<EntryFavorite> EntryFavorites { get; set; }
+        public DbSet<EntryComment> EntryComments { get; set; }
+        public DbSet<EntryCommentVote> EntryCommentVotes { get; set; }
+        public DbSet<EntryCommentFavorite> EntryCommentFavorites { get; set; }
+        public DbSet<EmailConfirmation> EmailConfirmations { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            //When calling migrations, it will start
+            if (!optionsBuilder.IsConfigured)
+            {
+                var connStr = "Data Source=localhost;Initial Catalog=OnionArchitectureProjectDb;Persist Security Info=True;User ID=sa;Password=test123;Encrypt=false";
+                optionsBuilder.UseSqlServer(connStr, opt =>
+                {
+                    opt.EnableRetryOnFailure();
+                }
+                );
+            }
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
@@ -59,10 +78,10 @@ namespace OnionArchitectureProject.Infrastructure.Persistence.Context
         }
         private void PrepareAddedEntities(IEnumerable<BaseEntity> entities)
         {
-            foreach(var entity in entities)
+            foreach (var entity in entities)
             {
-                if(entity.CreateDate==DateTime.MinValue)
-                entity.CreateDate = DateTime.Now;  
+                if (entity.CreateDate == DateTime.MinValue)
+                    entity.CreateDate = DateTime.Now;
             }
         }
     }

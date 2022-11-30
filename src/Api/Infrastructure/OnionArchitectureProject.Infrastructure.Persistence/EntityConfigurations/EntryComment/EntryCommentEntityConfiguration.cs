@@ -18,7 +18,8 @@ namespace OnionArchitectureProject.Infrastructure.Persistence.EntityConfiguratio
 
             builder.HasOne(x => x.CreatedBy)
                 .WithMany(i => i.EntryComments)
-                .HasForeignKey(i => i.CreatedById);
+                .HasForeignKey(i => i.CreatedById)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.Entry)
                 .WithMany(i => i.EntrtyComments)

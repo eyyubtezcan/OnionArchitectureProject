@@ -23,7 +23,8 @@ namespace OnionArchitectureProject.Infrastructure.Persistence.EntityConfiguratio
 
             builder.HasOne(x => x.CreatedUser)
                 .WithMany(i => i.EntryFavorites)
-                .HasForeignKey(i => i.CreatedById);
+                .HasForeignKey(i => i.CreatedById)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
     
